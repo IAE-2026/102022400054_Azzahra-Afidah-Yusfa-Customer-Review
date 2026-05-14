@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:80"
+    environment:
+      APP_KEY: base64:your-app-key-here
+      APP_ENV: local
+      APP_DEBUG: true
+      DB_CONNECTION: sqlite
+      API_KEY: reviewservice-secret-key-2024
+    volumes:
+      - .:/var/www/html
