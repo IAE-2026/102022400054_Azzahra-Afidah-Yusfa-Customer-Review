@@ -122,6 +122,6 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-    'api_key' => env('API_KEY', 'reviewservice-secret-key-2024'),
+    'api_key' => env('IAE_API_KEY', 'KEY-MHS-124'),
 
 ];

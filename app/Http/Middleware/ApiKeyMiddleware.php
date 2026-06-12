@@ -9,7 +9,7 @@ class ApiKeyMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        $apiKey = $request->header('X-API-KEY');
+        $apiKey = $request->header('X-IAE-KEY');
         $expectedKey = config('app.api_key');
 
         if (!$apiKey || $apiKey !== $expectedKey) {
