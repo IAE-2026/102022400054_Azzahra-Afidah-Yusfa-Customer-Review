@@ -4,19 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use Illuminate\Http\Request;
-use OpenApi\Attributes as OA;
+use OpenApi\Annotations as OA;
 
 class ReviewController extends Controller
 {
-    #[OA\Get(
-        path: "/api/v1/reviews",
-        summary: "Ambil semua review",
-        security: [["ApiKeyAuth" => []]],
-        responses: [
-            new OA\Response(response: 200, description: "Success"),
-            new OA\Response(response: 401, description: "Unauthorized")
-        ]
-    )]
+    /**
+     * @OA\Get(
+     *     path="/api/v1/reviews",
+     *     summary="Ambil semua review",
+     *     security={{"ApiKeyAuth": {}}},
+     *     @OA\Response(response=200, description="Success", @OA\JsonContent()),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function index()
     {
         $reviews = Review::all();
@@ -26,19 +26,55 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    #[OA\Get(
-        path: "/api/v1/reviews/product/{product_id}",
-        summary: "Ambil review berdasarkan produk",
-        security: [["ApiKeyAuth" => []]],
-        parameters: [
-            new OA\Parameter(name: "product_id", in: "path", required: true, schema: new OA\Schema(type: "string"))
-        ],
-        responses: [
-            new OA\Response(response: 200, description: "Success"),
-            new OA\Response(response: 404, description: "Not Found"),
-            new OA\Response(response: 401, description: "Unauthorized")
-        ]
-    )]
+    /**
+     * @OA\Get(
+     *     path="/api/v1/reviews/{id}",
+     *     summary="Ambil detail review berdasarkan ID",
+     *     security={{"ApiKeyAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Success", @OA\JsonContent()),
+     *     @OA\Response(response=404, description="Not Found", @OA\JsonContent()),
+     *     @OA\Response(response=401, description="Unauthorized", @OA\JsonContent())
+     * )
+     */
+    public function show($id)
+    {
+        $review = Review::find($id);
+
+        if (!$review) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Review not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $review
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/reviews/product/{product_id}",
+     *     summary="Ambil review berdasarkan produk",
+     *     security={{"ApiKeyAuth": {}}},
+     *     @OA\Parameter(
+     *         name="product_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Success", @OA\JsonContent()),
+     *     @OA\Response(response=404, description="Not Found", @OA\JsonContent()),
+     *     @OA\Response(response=401, description="Unauthorized", @OA\JsonContent())
+     * )
+     */
     public function byProduct($product_id)
     {
         $reviews = Review::where('product_id', $product_id)->get();
@@ -56,27 +92,25 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    #[OA\Post(
-        path: "/api/v1/reviews",
-        summary: "Simpan review baru",
-        security: [["ApiKeyAuth" => []]],
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                required: ["product_id", "reviewer_name", "rating", "comment"],
-                properties: [
-                    new OA\Property(property: "product_id", type: "string", example: "PROD-001"),
-                    new OA\Property(property: "reviewer_name", type: "string", example: "Azzahra"),
-                    new OA\Property(property: "rating", type: "integer", example: 5),
-                    new OA\Property(property: "comment", type: "string", example: "Produk bagus!")
-                ]
-            )
-        ),
-        responses: [
-            new OA\Response(response: 201, description: "Created"),
-            new OA\Response(response: 401, description: "Unauthorized")
-        ]
-    )]
+    /**
+     * @OA\Post(
+     *     path="/api/v1/reviews",
+     *     summary="Simpan review baru",
+     *     security={{"ApiKeyAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"product_id", "reviewer_name", "rating", "comment"},
+     *             @OA\Property(property="product_id", type="string", example="PROD-001"),
+     *             @OA\Property(property="reviewer_name", type="string", example="Azzahra"),
+     *             @OA\Property(property="rating", type="integer", example=5),
+     *             @OA\Property(property="comment", type="string", example="Produk bagus!")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Created", @OA\JsonContent()),
+     *     @OA\Response(response=401, description="Unauthorized", @OA\JsonContent())
+     * )
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
