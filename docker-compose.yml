@@ -4,8 +4,9 @@ services:
     ports:
       - "8000:80"
     environment:
-      APP_KEY: base64:your-app-key-here
+      APP_KEY: base64:jUqN+2gQxHkFk78Lw8Vd/wWvYtC7eF2/O6p34I68YQc=
       APP_ENV: local
       APP_DEBUG: true
+      APP_URL: http://localhost:8000
       DB_CONNECTION: sqlite
       API_KEY: 102022400054
