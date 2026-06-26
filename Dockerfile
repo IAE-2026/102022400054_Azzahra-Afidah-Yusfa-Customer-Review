@@ -18,6 +18,9 @@ WORKDIR /var/www/html
 COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
+
+# Setup SQLite database for the container
+RUN touch database/database.sqlite && php artisan migrate --force
 RUN chown -R www-data:www-data storage bootstrap/cache database
 
 # Generate Swagger Documentation
