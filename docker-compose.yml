@@ -9,5 +9,3 @@ services:
       APP_DEBUG: true
       DB_CONNECTION: sqlite
       API_KEY: 102022400054
-    volumes:
-      - .:/var/www/html

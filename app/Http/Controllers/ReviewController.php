@@ -4,19 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use Illuminate\Http\Request;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class ReviewController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/v1/reviews",
-     *     summary="Ambil semua review",
-     *     security={{"ApiKeyAuth": {}}},
-     *     @OA\Response(response=200, description="Success", @OA\JsonContent()),
-     *     @OA\Response(response=401, description="Unauthorized")
-     * )
-     */
+    #[OAT\Get(
+        path: "/api/v1/reviews",
+        summary: "Ambil semua review",
+        security: [["ApiKeyAuth" => []]]
+    )]
+    #[OAT\Response(response: 200, description: "Success", content: new OAT\JsonContent())]
+    #[OAT\Response(response: 401, description: "Unauthorized")]
     public function index()
     {
         $reviews = Review::all();
@@ -26,22 +24,15 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/v1/reviews/{id}",
-     *     summary="Ambil detail review berdasarkan ID",
-     *     security={{"ApiKeyAuth": {}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Success", @OA\JsonContent()),
-     *     @OA\Response(response=404, description="Not Found", @OA\JsonContent()),
-     *     @OA\Response(response=401, description="Unauthorized", @OA\JsonContent())
-     * )
-     */
+    #[OAT\Get(
+        path: "/api/v1/reviews/{id}",
+        summary: "Ambil detail review berdasarkan ID",
+        security: [["ApiKeyAuth" => []]]
+    )]
+    #[OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))]
+    #[OAT\Response(response: 200, description: "Success", content: new OAT\JsonContent())]
+    #[OAT\Response(response: 404, description: "Not Found", content: new OAT\JsonContent())]
+    #[OAT\Response(response: 401, description: "Unauthorized", content: new OAT\JsonContent())]
     public function show($id)
     {
         $review = Review::find($id);
@@ -59,22 +50,15 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/v1/reviews/product/{product_id}",
-     *     summary="Ambil review berdasarkan produk",
-     *     security={{"ApiKeyAuth": {}}},
-     *     @OA\Parameter(
-     *         name="product_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(response=200, description="Success", @OA\JsonContent()),
-     *     @OA\Response(response=404, description="Not Found", @OA\JsonContent()),
-     *     @OA\Response(response=401, description="Unauthorized", @OA\JsonContent())
-     * )
-     */
+    #[OAT\Get(
+        path: "/api/v1/reviews/product/{product_id}",
+        summary: "Ambil review berdasarkan produk",
+        security: [["ApiKeyAuth" => []]]
+    )]
+    #[OAT\Parameter(name: "product_id", in: "path", required: true, schema: new OAT\Schema(type: "string"))]
+    #[OAT\Response(response: 200, description: "Success", content: new OAT\JsonContent())]
+    #[OAT\Response(response: 404, description: "Not Found", content: new OAT\JsonContent())]
+    #[OAT\Response(response: 401, description: "Unauthorized", content: new OAT\JsonContent())]
     public function byProduct($product_id)
     {
         $reviews = Review::where('product_id', $product_id)->get();
@@ -92,25 +76,25 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/v1/reviews",
-     *     summary="Simpan review baru",
-     *     security={{"ApiKeyAuth": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"product_id", "reviewer_name", "rating", "comment"},
-     *             @OA\Property(property="product_id", type="string", example="PROD-001"),
-     *             @OA\Property(property="reviewer_name", type="string", example="Azzahra"),
-     *             @OA\Property(property="rating", type="integer", example=5),
-     *             @OA\Property(property="comment", type="string", example="Produk bagus!")
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Created", @OA\JsonContent()),
-     *     @OA\Response(response=401, description="Unauthorized", @OA\JsonContent())
-     * )
-     */
+    #[OAT\Post(
+        path: "/api/v1/reviews",
+        summary: "Simpan review baru",
+        security: [["ApiKeyAuth" => []]]
+    )]
+    #[OAT\RequestBody(
+        required: true,
+        content: new OAT\JsonContent(
+            required: ["product_id", "reviewer_name", "rating", "comment"],
+            properties: [
+                new OAT\Property(property: "product_id", type: "string", example: "PROD-001"),
+                new OAT\Property(property: "reviewer_name", type: "string", example: "Azzahra"),
+                new OAT\Property(property: "rating", type: "integer", example: 5),
+                new OAT\Property(property: "comment", type: "string", example: "Produk bagus!")
+            ]
+        )
+    )]
+    #[OAT\Response(response: 201, description: "Created", content: new OAT\JsonContent())]
+    #[OAT\Response(response: 401, description: "Unauthorized", content: new OAT\JsonContent())]
     public function store(Request $request)
     {
         $validated = $request->validate([
